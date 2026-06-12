@@ -13,7 +13,9 @@
    Without a key, EcoSpark answers from its built-in knowledge.
 ---------------------------------------------------------- */
 const GEMINI_API_KEY = window.ECOSPARK_CONFIG?.GEMINI_API_KEY || "";
-const GEMINI_MODEL = "gemini-2.0-flash";
+// "gemini-flash-latest" always points to the newest Flash model,
+// which is what free-tier AI Studio keys have quota for.
+const GEMINI_MODEL = "gemini-flash-latest";
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 const SYSTEM_PROMPT = `You are EcoSpark AI, a friendly, encouraging environmental assistant that helps people find eco-friendly and sustainable solutions for homes, schools, businesses, transportation, energy, recycling, water conservation and community projects.
@@ -307,7 +309,13 @@ async function askGemini(question) {
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
         contents: chatHistory.slice(-10),
-        generationConfig: { temperature: 0.7, maxOutputTokens: 500 },
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 1024,
+          // skip the model's internal "thinking" pass — answers arrive
+          // faster and the token budget goes to the visible reply
+          thinkingConfig: { thinkingBudget: 0 },
+        },
       }),
     });
     if (!res.ok) throw new Error(`Gemini HTTP ${res.status}`);
