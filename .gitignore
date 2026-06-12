@@ -1,2 +1,6 @@
 # Local secrets — never commit real API keys
 config.js
+
+# Vercel CLI project metadata
+.vercel/
+.vercel

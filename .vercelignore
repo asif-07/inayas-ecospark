@@ -1,0 +1,5 @@
+# Vercel upload exclusions. Unlike .gitignore, this deliberately
+# DOES ship config.js so the live chatbot has its Gemini API key.
+.git
+node_modules
+README.md
