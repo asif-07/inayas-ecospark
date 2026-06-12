@@ -300,7 +300,8 @@ async function askGemini(question) {
   if (!GEMINI_API_KEY) throw new Error("No Gemini API key configured");
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 15000);
+  // free-tier Gemini can take 15-20s under load — abort only as a last resort
+  const timer = setTimeout(() => controller.abort(), 30000);
   try {
     const res = await fetch(`${GEMINI_URL}?key=${encodeURIComponent(GEMINI_API_KEY)}`, {
       method: "POST",
